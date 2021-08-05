@@ -1,0 +1,40 @@
+version: '3.7'
+services:
+    mqtt:
+        image: eclipse-mosquitto:latest
+        ports:
+            - 1883:1883
+        deploy:
+            replicas: 1
+        networks:
+          - net1
+        volumes:
+          - ./mosquitto/config:/mosquitto/config/
+    nodered:
+        image: nodered/node-red:latest
+        ports:
+            - 1880:1880
+        environment:
+            - TZ=Asia/Taipei
+        deploy:
+            replicas: 1
+        networks:
+          - net1
+        volumes:
+          - node-red-data:/data
+    influxdb:
+        image: influxdb:latest
+        ports:
+            - 8086:8086
+        deploy:
+            replicas: 1
+        networks:
+          - net1
+        volumes:
+          - influxdb:/var/lib/influxdb2
+          - ./influxdb/config.yml:/etc/influxdb2/config.yml
+networks:
+    net1:
+volumes:
+    influxdb:
+    node-red-data:
